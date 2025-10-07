@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Portal - Quality of Life Assessment</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: #667eea;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .section {
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        input[type="text"],
+        input[type="email"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="number"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .question-card {
+            background: #f8f9fa;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .question-card h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .radio-option:hover {
+            background: #e9ecef;
+        }
+        
+        .radio-option input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #5568d3;
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .score-display {
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .score-value {
+            font-size: 72px;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+        }
+        
+        .score-category {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .recommendations {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .recommendations h3 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+        
+        .recommendations ul {
+            list-style-position: inside;
+            color: #856404;
+        }
+        
+        .recommendations li {
+            margin-bottom: 8px;
+        }
+        
+        .consent-box {
+            background: #e7f3ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 2px solid #2196F3;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏥 Patient Quality of Life Assessment</h1>
+            <p>Help us understand your health and well-being</p>
+        </div>
+        
+        <div class="content">
+            <!-- Section 1: Patient Information -->
+            <div id="section-patient-info" class="section active">
+                <h2>Patient Information</h2>
+                <p style="margin: 20px 0; color: #666;">Please provide your basic information to begin the assessment.</p>
+                
+                <div class="form-group">
+                    <label for="patientName">Full Name *</label>
+                    <input type="text" id="patientName" required placeholder="Enter your full name">
+                </div>
+                
+                <div class="form-group">
+                    <label for="patientEmail">Email Address *</label>
+                    <input type="email" id="patientEmail" required placeholder="your.email@example.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="patientAge">Age</label>
+                    <input type="number" id="patientAge" min="1" max="120" placeholder="Enter your age">
+                </div>
+                
+                <button onclick="startQuestionnaire()">Start Assessment</button>
+            </div>
+            
+            <!-- Section 2: Questionnaire -->
+            <div id="section-questionnaire" class="section">
+                <h2>Quality of Life Questionnaire</h2>
+                <p style="margin: 20px 0; color: #666;">Please answer the following questions honestly. There are no right or wrong answers.</p>
+                
+                <div id="questions-container"></div>
+                
+                <div class="button-group">
+                    <button onclick="goBack()">Back</button>
+                    <button onclick="submitQuestionnaire()" id="submitBtn">Submit Assessment</button>
+                </div>
+            </div>
+            
+            <!-- Section 3: Results -->
+            <div id="section-results" class="section">
+                <div class="score-display">
+                    <h2>Your Quality of Life Score</h2>
+                    <div class="score-value" id="scoreValue">--</div>
+                    <div class="score-category" id="scoreCategory">--</div>
+                    
+                    <div class="recommendations">
+                        <h3>📋 Recommendations</h3>
+                        <ul id="recommendationsList"></ul>
+                    </div>
+                    
+                    <div id="analysisSection"></div>
+                </div>
+                
+                <button onclick="showConsent()">Continue to Share Report</button>
+            </div>
+            
+            <!-- Section 4: Consent -->
+            <div id="section-consent" class="section">
+                <h2>Share Report with Your Doctor</h2>
+                
+                <div class="consent-box">
+                    <h3>📧 Report Sharing</h3>
+                    <p>Would you like to share your quality of life assessment report with your healthcare provider?</p>
+                    
+                    <div class="form-group" style="margin-top: 20px;">
+                        <label for="doctorEmail">Doctor's Email Address *</label>
+                        <input type="email" id="doctorEmail" placeholder="doctor@clinic.com">
+                    </div>
+                    
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="consentCheckbox">
+                        <label for="consentCheckbox" style="margin: 0;">
+                            I consent to sharing my quality of life assessment report with my healthcare provider
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button onclick="showResults()">Back</button>
+                    <button onclick="submitConsent()" id="consentBtn">Submit</button>
+                </div>
+            </div>
+            
+            <!-- Section 5: Completion -->
+            <div id="section-complete" class="section">
+                <div class="success-message">
+                    <h2>✅ Assessment Complete!</h2>
+                    <p id="completionMessage"></p>
+                </div>
+                
+                <div style="margin: 30px 0;">
+                    <h3>Next Steps:</h3>
+                    <ul style="margin-left: 20px; margin-top: 15px;">
+                        <li style="margin-bottom: 10px;">Review your report with your healthcare provider</li>
+                        <li style="margin-bottom: 10px;">Follow the recommendations provided</li>
+                        <li style="margin-bottom: 10px;">Complete a follow-up assessment in 3 months</li>
+                    </ul>
+                </div>
+                
+                <div class="button-group">
+                    <button onclick="viewReport()">View Full Report</button>
+                    <button onclick="startOver()">Start New Assessment</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>
