@@ -1,0 +1,26 @@
+{
+  "name": "patientportalmvp",
+  "version": "1.0.0",
+  "description": "Patient portal MVP for collecting medical questionnaire responses and calculating quality of life scores",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "jest",
+    "init-db": "node src/database/init.js"
+  },
+  "keywords": ["patient", "portal", "questionnaire", "healthcare"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "sqlite3": "^5.1.6",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1",
+    "jest": "^29.7.0"
+  }
+}
